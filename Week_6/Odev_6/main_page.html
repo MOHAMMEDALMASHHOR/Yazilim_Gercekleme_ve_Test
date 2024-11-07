@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+</head>
+<body>
+
+<h1>Welcome to the Main Page</h1>
+<p>This page is accessible after registration.</p>
+
+<button id="logoutButton" onclick="logout()">Logout</button>
+<br><br>
+<input type="checkbox" id="rememberMe"> Remember Me
+<br><br>
+
+<!-- iFrame loading the profile page -->
+<iframe id="profileIframe" src="profile.html" width="600" height="400" title="Profile Page"></iframe>
+
+<script>
+    function logout() {
+        alert('You have logged out.');
+        window.location.href = "register.html";  // Redirect back to registration page
+    }
+</script>
+
+</body>
+</html>
