@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Todo Manager</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --accent-color: #e74c3c;
+            --background-color: #f4f6f9;
+            --text-color: #333;
+            --light-text: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            display: flex;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+        }
+
+        .navbar-item {
+            padding: 0.5rem 1rem;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .navbar-item.active, .navbar-item:hover {
+            opacity: 1;
+            border-bottom: 2px solid white;
+        }
+
+        .page {
+            display: none;
+            padding: 2rem;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .todo-input-container {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        #todo-input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .todo-list {
+            list-style-type: none;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .todo-checkbox {
+            margin-right: 1rem;
+        }
+
+        .todo-text {
+            flex-grow: 1;
+        }
+
+        .todo-text.completed {
+            text-decoration: line-through;
+            color: var(--light-text);
+        }
+
+        .todo-category {
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .todo-priority {
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            color: var(--accent-color);
+        }
+
+        .chart-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .chart {
+            background-color: #f9f9f9;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-danger {
+            background-color: var(--accent-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="navbar">
+            <a href="#" class="navbar-item active" data-page="dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="#" class="navbar-item" data-page="todos">
+                <i class="fas fa-list-ul"></i> My Todos
+            </a>
+            <a href="#" class="navbar-item" data-page="analytics">
+                <i class="fas fa-chart-pie"></i> Analytics
+            </a>
+        </nav>
+
+        <div id="dashboard" class="page active">
+            <h1>Dashboard</h1>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Total Todos</h3>
+                    <div class="stat-number" id="total-todos">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Completed Todos</h3>
+                    <div class="stat-number" id="completed-todos">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Todos</h3>
+                    <div class="stat-number" id="pending-todos">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Productivity Rate</h3>
+                    <div class="stat-number" id="productivity-rate">0%</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="todos" class="page">
+            <h1>My Todos</h1>
+            <div class="todo-input-container">
+                <input type="text" id="todo-input" placeholder="Add a new todo">
+                <button class="btn" id="add-todo-btn">Add Todo</button>
+            </div>
+            <ul id="todo-list" class="todo-list"></ul>
+        </div>
+
+        <div id="analytics" class="page">
+            <h1>Analytics</h1>
+            <div class="chart-container">
+                <div class="chart">
+                    <h3>Todos by Category</h3>
+                    <canvas id="category-chart"></canvas>
+                </div>
+                <div class="chart">
+                    <h3>Todos by Priority</h3>
+                    <canvas id="priority-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        class TodoApp {
+            constructor() {
+                this.todos = JSON.parse(localStorage.getItem('todos') || '[]');
+                this.initDOM();
+                this.initEventListeners();
+                this.renderTodos();
+                this.updateDashboard();
+                this.renderCharts();
+            }
+
+            initDOM() {
+                this.navItems = document.querySelectorAll('.navbar-item');
+                this.pages = document.querySelectorAll('.page');
+                this.todoInput = document.getElementById('todo-input');
+                this.addTodoBtn = document.getElementById('add-todo-btn');
+                this.todoList = document.getElementById('todo-list');
+                this.totalTodosEl = document.getElementById('total-todos');
+                this.completedTodosEl = document.getElementById('completed-todos');
+                this.pendingTodosEl = document.getElementById('pending-todos');
+                this.productivityRateEl = document.getElementById('productivity-rate');
+            }
+
+            initEventListeners() {
+                this.navItems.forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const pageId = item.dataset.page;
+                        this.navigateTo(pageId);
+                    });
+                });
+                this.addTodoBtn.addEventListener('click', () => this.addTodo());
+                this.todoInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.addTodo();
+                });
+            }
+
+            navigateTo(pageId) {
+                this.pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                this.navItems.forEach(item => item.classList.remove('active'));
+                document.querySelector(`.navbar-item[data-page="${pageId}"]`).classList.add('active');
+                if (pageId === 'analytics') {
+                    this.renderCharts();
+                }
+            }
+
+            addTodo() {
+                const todoText = this.todoInput.value.trim();
+                if (!todoText) return;
+
+                const newTodo = {
+                    id: Date.now(),
+                    text: todoText,
+                    completed: false,
+                    category: this.getRandomCategory(),
+                    priority: this.getRandomPriority(),
+                    createdAt: new Date().toISOString()
+                };
+
+                this.todos.push(newTodo);
+                this.todoInput.value = '';
+                this.saveTodos();
+                this.renderTodos();
+                this.updateDashboard();
+            }
+
+            renderTodos() {
+                this.todoList.innerHTML = '';
+                this.todos.forEach(todo => {
+                    const li = document.createElement('li');
+                    li.className = 'todo-item';
+                    li.innerHTML = `
+                        <input 
+                            type="checkbox" 
+                            class="todo-checkbox" 
+                            ${todo.completed ? 'checked' : ''}
+                            onchange="todoApp.toggleTodo(${todo.id})"
+                        >
+                        <span class="todo-text ${todo.completed ? 'completed' : ''}">
+                            ${todo.text}
+                        </span>
+                        <span class="todo-category">[${todo.category}]</span>
+                        <span class="todo-priority">[${todo.priority}]</span>
+                        <button class="btn btn-danger" onclick="todoApp.deleteTodo(${todo.id})">
+                            Delete
+                        </button>
+                    `;
+                    this.todoList.appendChild(li);
+                });
+            }
+
+            toggleTodo(id) {
+                const todo = this.todos.find(t => t.id === id);
+                todo.completed = !todo.completed;
+                this.saveTodos();
+                this.renderTodos();
+                this.updateDashboard();
+            }
+
+            deleteTodo(id) {
+                this.todos = this.todos.filter(todo => todo.id !== id);
+                this.saveTodos();
+                this.renderTodos();
+                this.updateDashboard();
+            }
+
+            saveTodos() {
+                localStorage.setItem('todos', JSON.stringify(this.todos));
+            }
+
+            updateDashboard() {
+                const totalTodos = this.todos.length;
+                const completedTodos = this.todos.filter(t => t.completed).length;
+                const pendingTodos = totalTodos - completedTodos;
+                const productivityRate = totalTodos > 0 
+                    ? Math.round((completedTodos / totalTodos) * 100) 
+                    : 0;
+
+                this.totalTodosEl.textContent = totalTodos;
+                this.completedTodosEl.textContent = completedTodos;
+                this.pendingTodosEl.textContent = pendingTodos;
+                this.productivityRateEl.textContent = `${productivityRate}%`;
+            }
+
+            renderCharts() {
+                const categoryData = this.calculateCategoryData();
+                new Chart(document.getElementById('category-chart'), {
+                    type: 'pie',
+                    data: {
+                        labels: categoryData.labels,
+                        datasets: [{
+                            data: categoryData.values,
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
+                            ]
+                        }]
+                    }
+                });
+
+                const priorityData = this.calculatePriorityData();
+                new Chart(document.getElementById('priority-chart'), {
+                    type: 'bar',
+                    data: {
+                        labels: priorityData.labels,
+                        datasets: [{
+                            label: 'Todos by Priority',
+                            data: priorityData.values,
+                            backgroundColor: [
+                                '#FF6384', '#36A2EB', '#FFCE56'
+                            ]
+                        }]
+                    }
+                });
+            }
+
+            calculateCategoryData() {
+                const categoryCount = {};
+                this.todos.forEach(todo => {
+                    categoryCount[todo.category] = (categoryCount[todo.category] || 0) + 1;
+                });
+                return {
+                    labels: Object.keys(categoryCount),
+                    values: Object.values(categoryCount)
+                };
+            }
+
+            calculatePriorityData() {
+                const priorityCount = {
+                    'low': 0,
+                    'medium': 0,
+                    'high': 0
+                };
+                this.todos.forEach(todo => {
+                    priorityCount[todo.priority]++;
+                });
+                return {
+                    labels: Object.keys(priorityCount),
+                    values: Object.values(priorityCount)
+                };
+            }
+
+            getRandomCategory() {
+                const categories = ['Work', 'Personal', 'Shopping', 'Health', 'Other'];
+                return categories[Math.floor(Math.random() * categories.length)];
+            }
+
+            getRandomPriority() {
+                const priorities = ['low', 'medium', 'high'];
+                return priorities[Math.floor(Math.random() * priorities.length)];
+            }
+        }
+
+        const todoApp = new TodoApp();
+    </script>
+</body>
+</html>
