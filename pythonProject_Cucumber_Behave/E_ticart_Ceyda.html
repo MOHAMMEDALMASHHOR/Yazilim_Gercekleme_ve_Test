@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .product {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            display: inline-block;
+            width: 200px;
+        }
+        .cart {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #000;
+        }
+        .button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>E-Commerce Website</h1>
+    <div class="product" id="product1">
+        <h2>Product 1</h2>
+        <button class="button" onclick="addToCart('Product 1')">Add to Cart</button>
+    </div>
+    <div class="product" id="product2">
+        <h2>Product 2</h2>
+        <button class="button" onclick="addToCart('Product 2')">Add to Cart</button>
+    </div>
+    <div class="product" id="product3">
+        <h2>Product 3</h2>
+        <button class="button" onclick="addToCart('Product 3')">Add to Cart</button>
+    </div>
+    <div class="cart" id="cart">
+        <h2>Shopping Cart</h2>
+        <ul id="cartItems"></ul>
+        <button class="button" onclick="clearCart()">Clear Cart</button>
+    </div>
+    <script>
+        function addToCart(product) {
+            const cartItems = document.getElementById('cartItems');
+            const item = document.createElement('li');
+            item.textContent = product;
+            cartItems.appendChild(item);
+        }
+
+        function clearCart() {
+            const cartItems = document.getElementById('cartItems');
+            cartItems.innerHTML = '';
+        }
+    </script>
+</body>
+</html>
