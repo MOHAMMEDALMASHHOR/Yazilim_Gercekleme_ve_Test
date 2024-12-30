@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selenium Test Formu</title>
+</head>
+<body>
+    <h1>Selenium Test Formu</h1>
+    
+    <form id="testForm" action="#" method="POST">
+        <!-- Input alanları -->
+        <label for="ad">Ad:</label>
+        <input type="text" id="ad" name="ad"><br><br>
+        
+        <label for="email">E-posta:</label>
+        <input type="email" id="email" name="email"><br><br>
+
+        <!-- Checkbox -->
+        <label for="abone">Bültene abone olun:</label>
+        <input type="checkbox" id="abone" name="abone"><br><br>
+
+        <!-- Radio buttons -->
+        <label for="cinsiyet">Cinsiyet:</label><br>
+        <input type="radio" id="erkek" name="cinsiyet" value="erkek"> Erkek<br>
+        <input type="radio" id="kadin" name="cinsiyet" value="kadin"> Kadın<br>
+        <input type="radio" id="diger" name="cinsiyet" value="diger"> Diğer<br><br>
+
+        <!-- Dropdown -->
+        <label for="ulke">Ülkenizi seçin:</label>
+        <select id="ulke" name="ulke">
+            <option value="turkiye">Türkiye</option>
+            <option value="abd">ABD</option>
+            <option value="almanya">Almanya</option>
+            <option value="fransa">Fransa</option>
+            <option value="kanada">Kanada</option>
+            <option value="avustralya">Avustralya</option>
+            <option value="brazil">Brezilya</option>
+            <option value="cin">Çin</option>
+            <option value="hindistan">Hindistan</option>
+            <option value="rusya">Rusya</option>
+            <option value="ingiltere">İngiltere</option>
+            <option value="italya">İtalya</option>
+            <option value="ispanya">İspanya</option>
+            <option value="japonya">Japonya</option>
+            <option value="guney_kore">Güney Kore</option>
+            <option value="mekhika">Meksika</option>
+            <option value="misir">Mısır</option>
+            <!-- Daha fazla ülke ekleyebilirsiniz -->
+        </select><br><br>
+
+        <!-- Butonlar -->
+        <button type="button" id="clickButton">Tıkla!</button><br><br>
+        <input type="submit" value="Gönder">
+    </form>
+    
+    <script>
+        document.getElementById('clickButton').addEventListener('click', function() {
+            alert('Butona tıkladınız!');
+        });
+    </script>
+</body>
+</html>
